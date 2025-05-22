@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>手写数字识别</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+            background-color: white;
+        }
+        #btns {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>请绘制数字：</h2>
+    <canvas id="canvas" width="280" height="280"></canvas>
+    <div id="btns">
+        <button onclick="clearCanvas()">清空</button>
+        <button onclick="sendImage()">识别</button>
+    </div>
+    <h3 id="result">预测结果：无</h3>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let drawing = false;
+
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        canvas.addEventListener("mousedown", () => drawing = true);
+        canvas.addEventListener("mouseup", () => drawing = false);
+        canvas.addEventListener("mousemove", draw);
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(e.offsetX, e.offsetY, 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById("result").innerText = "预测结果：无";
+        }
+
+        function sendImage() {
+            const dataUrl = canvas.toDataURL("image/png");
+            fetch("/predict", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ image: dataUrl })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("result").innerText = "预测结果：" + data.prediction;
+            });
+        }
+    </script>
+</body>
+</html>

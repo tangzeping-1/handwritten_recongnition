@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>手写数字识别</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+            background: white;
+            cursor: crosshair;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🖊 请在下方画一个数字：</h2>
+    <canvas id="canvas" width="280" height="280"></canvas><br>
+    <button onclick="predict()">识别</button>
+    <button onclick="clearCanvas()">清除</button>
+    <h3 id="result">结果：-</h3>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
